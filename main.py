@@ -2,7 +2,7 @@ import sqlite3, config
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-
+from datetime import date
 
 app = FastAPI()
 
@@ -49,7 +49,18 @@ def index(request: Request):
                 SELECT symbol, name FROM stock ORDER BY Symbol
             """)
     rows = cursor.fetchall()
-    return templates.TemplateResponse("index.html", {"request": request, "stocks": rows})
+    cursor.execute("""
+                   SELECT symbol , rsi_14, sma_20, sma_50, close 
+                   from stock join stock_price on stock_price.stock_id =stock.id
+                   where date = (select max(date) from stock_price)
+               """)
+    indicator_rows =  cursor.fetchall()
+    indicator_values={}
+    for row in indicator_rows:
+        indicator_values[row['symbol']] = row
+
+    print(indicator_values)
+    return templates.TemplateResponse("index.html", {"request": request, "stocks": rows, "indicator_values": indicator_values})
 
 
 @app.get("/stock/{symbol}")
