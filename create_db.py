@@ -39,9 +39,10 @@ cursor.execute("""
         strategy_id INTEGER NOT NULL,
         FOREIGN KEY (stock_id) REFERENCES stock (id)
         FOREIGN KEY (strategy_id) REFERENCES strategy (id)
+        UNIQUE(stock_id,strategy_id)
     )
 """)
-strategies = ['opening_range_breakout', 'opening_range_breakdown']
+strategies = ['opening_range_breakout', 'opening_range_breakdown','bollinger_bands']
 for strategy in strategies:
     cursor.execute("""
         INSERT INTO strategy (name) VALUES (?)
