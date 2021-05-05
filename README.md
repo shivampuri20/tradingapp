@@ -2,4 +2,8 @@
 Trading APP 
 
 Requirements:
-Sqlite database for Storage
+Alpaca trading account 
+fastapi
+
+TO RUN :
+uvicorn main:app --reload
